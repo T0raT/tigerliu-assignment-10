@@ -1,2 +1,5 @@
 .python-version
 venv/
+.vscode/
+coco_images_resized/
+image_embeddings.pickle
