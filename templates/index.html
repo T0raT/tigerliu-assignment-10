@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Semantic Search</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <h1>Semantic Search</h1>
+
+    <section>
+      <h2>Image Search</h2>
+      <form method="POST" enctype="multipart/form-data">
+        <label for="query_type">Query Type:</label>
+        <select name="query_type" required>
+          <option value="image">Image</option>
+          <option value="text">Text</option>
+        </select>
+
+        <div id="image-search">
+          <label for="image_query">Upload an image:</label>
+          <input type="file" name="image_query" />
+        </div>
+
+        <div id="text-search">
+          <label for="text_query">Enter text query:</label>
+          <input type="text" name="text_query" />
+        </div>
+
+        <button type="submit">Search</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>Results</h2>
+      {% if results %}
+      <ul>
+        {% for result in results %}
+        <li>
+          <img src="{{ result['file_name'] }}" alt="Result Image" />
+          <p>Similarity Score: {{ result['similarity'] }}</p>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No results found.</p>
+      {% endif %}
+    </section>
+  </body>
+</html>
