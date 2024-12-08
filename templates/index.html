@@ -10,20 +10,28 @@
     />
   </head>
   <body>
-    <h1>Semantic Search</h1>
+    <h1>Semantic Image Search</h1>
 
-    <section>
-      <h2>Image Search</h2>
+    <section id="search-section">
       <form method="POST" enctype="multipart/form-data">
-        <label for="query_type">Query Type:</label>
-        <select name="query_type" required>
-          <option value="image">Image</option>
-          <option value="text">Text</option>
-        </select>
+        <div id="query-type">
+          <label for="query_type">Query Type:</label>
+          <select name="query_type" onchange="toggleSearchType()" required>
+            <option value="text">Text</option>
+            <option value="image">Image</option>
+            <option value="hybrid">Hybrid</option>
+          </select>
+        </div>
 
         <div id="image-search">
-          <label for="image_query">Upload an image:</label>
-          <input type="file" name="image_query" />
+          <label id="upload-label" for="upload-input">Upload an image:</label>
+          <input
+            id="upload-input"
+            type="file"
+            name="image_query"
+            onchange="displayFileName(this)"
+          />
+          <span id="file-name">No file selected</span>
         </div>
 
         <div id="text-search">
@@ -31,11 +39,38 @@
           <input type="text" name="text_query" />
         </div>
 
+        <div id="pca-options">
+          <label>
+            <input type="checkbox" name="use_pca" />
+            Use PCA Embeddings
+          </label>
+          <label for="k_components">Number of Principal Components (k):</label>
+          <input
+            type="number"
+            name="k_components"
+            min="1"
+            max="512"
+            value="50"
+          />
+        </div>
+
+        <div id="hybrid-weight" style="display: none">
+          <label for="hybrid_weight">Weight for text (0.0 - 1.0):</label>
+          <input
+            type="number"
+            name="hybrid_weight"
+            step="0.01"
+            min="0.0"
+            max="1.0"
+            value="0.5"
+          />
+        </div>
+
         <button type="submit">Search</button>
       </form>
     </section>
 
-    <section>
+    <section id="results-section">
       <h2>Results</h2>
       {% if results %}
       <ul>
@@ -51,4 +86,41 @@
       {% endif %}
     </section>
   </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      toggleSearchType(); // Ensure the correct section is shown
+    });
+
+    function displayFileName(input) {
+      const fileNameSpan = document.getElementById("file-name");
+      if (input.files && input.files[0]) {
+        fileNameSpan.textContent = input.files[0].name;
+      } else {
+        fileNameSpan.textContent = "No file selected";
+      }
+    }
+
+    function toggleSearchType() {
+      const queryType = document.querySelector(
+        'select[name="query_type"]'
+      ).value;
+      const imageSearch = document.getElementById("image-search");
+      const textSearch = document.getElementById("text-search");
+      const hybridWeight = document.getElementById("hybrid-weight");
+
+      if (queryType === "text") {
+        textSearch.style.display = "block";
+        imageSearch.style.display = "none";
+        hybridWeight.style.display = "none";
+      } else if (queryType === "image") {
+        textSearch.style.display = "none";
+        imageSearch.style.display = "block";
+        hybridWeight.style.display = "none";
+      } else if (queryType === "hybrid") {
+        textSearch.style.display = "block";
+        imageSearch.style.display = "block";
+        hybridWeight.style.display = "block";
+      }
+    }
+  </script>
 </html>

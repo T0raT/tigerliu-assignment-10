@@ -3,3 +3,4 @@ venv/
 .vscode/
 coco_images_resized/
 image_embeddings.pickle
+tempCodeRunnerFile.py
